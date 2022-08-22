@@ -17,8 +17,11 @@ const teclasDigitadas = (event) => {
         return null;
     }
 
-    if (char == 'ENTER') {
+    if (char == 'ENTER' && entrada.length == 5) {
         validarEntrada()
+
+        entrada = [];
+        linha +=1;
         return;
 
     }
@@ -44,10 +47,9 @@ function exibeLetra(letra) {
 
 
 function tecladoCLick(event) {
-    const letra = event.target.innerHTML
-    entrada.push(letra)
-    console.log(letra)
-    if (letra == 'ENTER') {
+    let letra = event.target.innerHTML
+
+    if (letra == 'ENTER' && entrada.length == 5) {
         validarEntrada()
         return;
 
@@ -55,22 +57,19 @@ function tecladoCLick(event) {
     
     if (letra == 'BACKSPACE') {
         entrada.pop()
-        console.log(entrada)
         return;
     }
-
+    entrada.push(letra)
     exibeLetra(letra)
 
 }
 
 function validarEntrada() {
-    const palavraEnviada = entrada.join().replaceAll(',','');
+    let palavraEnviada = entrada.join().replaceAll(',','');
     //const palavraDoDiaArray = palavraDoDia.split('')
     const teclado = document.getElementsByTagName("button")
-    console.log(teclado)
 
     for (let tecla in teclado) {
-        console.log(tecla)
         for (let letra = 0; letra < entrada.length; letra++){
             let elId = `l${linha}c${letra + 1}` // aqui estamos criando a variavel elId atribuindo a ela o valor do quadradinho. ex. l1e5
             const el = document.getElementById(elId) //aqui a gentre atribui a variavel el o valor atribuido na variável acima
@@ -78,8 +77,6 @@ function validarEntrada() {
             // const letrasTeclado = document.querySelectorAll(#tecla)
             if (entrada[letra] == palavraDoDia[letra]){
                 el.style.backgroundColor = '#6aaa64';
-                console.log(teclado[tecla].innerHTML, 'tecla')
-                console.log(entrada[letra])
                 if (teclado[tecla].innerHTML === entrada[letra]){
                     teclado[tecla].classList.add('fullcorrect')
                 }
@@ -99,15 +96,16 @@ function validarEntrada() {
             }
         }
     }
+
+    if (palavraEnviada == palavraDoDia) {
+        alert('palavra correta')
+    }
 }
-//         if (palavraEnviada == palavraDoDia) {
-//              alert('palavra correta')
-    
-//         }else {
-//             entrada = []
-//             linha +=1
-//         }
-//     }
-// }
+        //  }else {
+        //     entrada = []
+        //      linha +=1
+        //  }
+     
+
 
 document.body.addEventListener('keydown', teclasDigitadas)
