@@ -1,42 +1,64 @@
 const palavrasValidas = ['sagaz', 'mexer', 'termo', 'nobre', 'afeto', 'sutil', 'vigor', 'fazer', 'poder', 'carne', 'moral', 'plena', ]
 
-const palavraDoDia = 'QUOTE'
+const palavraDoDia = 'FESTA'
 
 let entrada = []
 
 let linha = 1
 
-const teclasDigitadas = (event) => {
-
-    let char = event.key.toUpperCase();
+const teclasDigitadas = (event, type = 'typing') => {
+    let char;
     let teclado = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
          'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', 'ENTER', 'BACKSPACE'];
+
+    if (type === 'teclado'){
+        char = event.target.innerHTML
+    } else {
+        char = event.key.toUpperCase()
+    }
+
     if (!teclado.includes(char)){
-        console.log('tecla inválida', char)
-        return null;
-    }
-
-    if (char == 'ENTER' && entrada.length == 5) {
-        validarEntrada()
-
-        entrada = [];
-        linha +=1;
+        //console.log('tecla inválida', char)
         return;
-
     }
-    
-    if (char == 'BACKSPACE') {
+
+    if (char === 'BACKSPACE') {
         entrada.pop()
-        console.log(entrada)
+        return;
+    }
+    if (char == 'BACKSPACE' && entrada.length >= 0) {
+        entrada.pop()
+        exibeLetra(char)
         return;
     }
 
-    entrada.push(char)
-    console.log(entrada)
+    if (char !== 'BACKSPACE' && char !== 'ENTER') {
+        entrada.push(char)
+        exibeLetra(char)
+    }
 
-    exibeLetra(char)
 
+    if (char == 'ENTER') {
+        validarEntrada()
+        linha ++;
+
+        if (palavraDoDia === entrada.join('')) {
+            linha = -1;
+            return
+        }
+        entrada = []
+    }
+
+    // console.log(entrada)
+
+
+}
+
+function apagaLetra(letra) {
+    let elId = `l${linha}c${entrada.length}` // aqui estamos criando a variavel elId atribuindo a ela o valor do quadradinho. ex. l1e5
+    const el = document.getElementById(elId) //aqui a gentre atribui a variavel el o valor atribuido na variável acima
+    el.textContent = letra // aqui a gente passa o texto ao quadradinho 
 }
 
 function exibeLetra(letra) {
@@ -46,23 +68,7 @@ function exibeLetra(letra) {
 }
 
 
-function tecladoCLick(event) {
-    let letra = event.target.innerHTML
-
-    if (letra == 'ENTER' && entrada.length == 5) {
-        validarEntrada()
-        return;
-
-    }
-    
-    if (letra == 'BACKSPACE') {
-        entrada.pop()
-        return;
-    }
-    entrada.push(letra)
-    exibeLetra(letra)
-
-}
+ 
 
 function validarEntrada() {
     let palavraEnviada = entrada.join().replaceAll(',','');
@@ -101,11 +107,6 @@ function validarEntrada() {
         alert('palavra correta')
     }
 }
-        //  }else {
-        //     entrada = []
-        //      linha +=1
-        //  }
-     
 
 
 document.body.addEventListener('keydown', teclasDigitadas)
